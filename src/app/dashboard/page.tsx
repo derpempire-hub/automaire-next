@@ -20,7 +20,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } }
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as const } }
 };
 
 function StatCardSkeleton() {
@@ -48,7 +48,7 @@ export default function DashboardHome() {
   const isLoading = leadsLoading || companiesLoading || tasksLoading || proposalsLoading || projectsLoading;
 
   const pendingTasks = useMemo(() => tasks.filter(t => t.status !== 'completed').length, [tasks]);
-  const activeProjects = useMemo(() => projects.filter(p => p.status === 'in_progress' || p.status === 'planning').length, [projects]);
+  const activeProjects = useMemo(() => projects.filter(p => p.status === 'in_progress' || p.status === 'not_started').length, [projects]);
   const pendingProposals = useMemo(() => proposals.filter(p => p.status === 'sent' || p.status === 'draft').length, [proposals]);
 
   const kpis = [

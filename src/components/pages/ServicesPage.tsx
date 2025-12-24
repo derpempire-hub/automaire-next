@@ -5,11 +5,21 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Zap, MessageSquare, Phone, ArrowRight, Check, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ShineButton } from '@/components/landing/ShineButton';
 import { ProductDemo } from '@/components/landing/ProductDemo';
 import { Logo } from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import {
+  MeshGradient,
+  GradientText,
+  WordReveal,
+  TiltCard,
+  GlowCard,
+  ShineCard,
+  MagneticButton,
+  Spotlight,
+  Beam,
+} from '@/components/animations';
 
 type ServiceId = 'websites' | 'automation' | 'chatbots' | 'voice';
 
@@ -110,64 +120,99 @@ export default function ServicesPage() {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-hidden">
+        {/* Premium Background */}
+        <MeshGradient intensity="subtle" speed="slow" className="fixed inset-0 z-0" />
+
         {/* Nav */}
-        <nav className="border-b border-border/30 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
-          <div className="container flex h-12 items-center justify-between">
+        <motion.nav
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="border-b border-border/30 bg-background/60 backdrop-blur-xl sticky top-0 z-50"
+        >
+          <div className="container flex h-14 items-center justify-between">
             <Logo size="xl" />
             <div className="flex items-center gap-4">
               <ThemeToggle />
-              <Link href="/pricing" className="text-muted-foreground hover:text-foreground text-xs">
+              <Link href="/pricing" className="text-muted-foreground hover:text-foreground text-sm transition-colors">
                 Pricing
               </Link>
               <Link href="/contact">
-                <ShineButton size="default" className="h-8 px-3 text-xs">
+                <MagneticButton className="h-9 px-4 text-sm bg-primary text-primary-foreground rounded-md font-medium">
                   Get started
-                </ShineButton>
+                </MagneticButton>
               </Link>
             </div>
           </div>
-        </nav>
+        </motion.nav>
 
-        <div className="container py-8">
+        <Spotlight className="container py-12 relative z-10" spotlightSize={500} spotlightColor="rgba(120, 80, 220, 0.06)">
           {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-2xl font-semibold mb-1">Services</h1>
-            <p className="text-sm text-muted-foreground">What we build for you</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mb-10"
+          >
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">
+              <WordReveal delay={0.3}>Our Services</WordReveal>
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Everything you need to <GradientText>automate and scale</GradientText>
+            </p>
+          </motion.div>
 
           {/* Split Layout: Narrative Left, Preview Right */}
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-10">
             {/* Left: Narrative */}
             <div>
-              {/* Service Tabs - Vertical */}
-              <div className="space-y-1 mb-6">
-                {services.map((service) => (
-                  <button
+              {/* Service Tabs - Vertical with Glow */}
+              <div className="space-y-2 mb-8">
+                {services.map((service, i) => (
+                  <motion.div
                     key={service.id}
-                    onClick={() => setActiveService(service.id)}
-                    className={cn(
-                      'w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all group',
-                      activeService === service.id
-                        ? 'bg-primary/5 border border-primary/30'
-                        : 'hover:bg-muted/50 border border-transparent'
-                    )}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
                   >
-                    <div className={cn(
-                      'h-8 w-8 rounded-lg flex items-center justify-center transition-colors',
-                      activeService === service.id ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                    )}>
-                      <service.icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium">{service.title}</div>
-                      <div className="text-[10px] text-muted-foreground truncate">{service.tagline}</div>
-                    </div>
-                    <ChevronRight className={cn(
-                      'h-4 w-4 text-muted-foreground transition-transform',
-                      activeService === service.id && 'rotate-90 text-primary'
-                    )} />
-                  </button>
+                    <ShineCard
+                      className={cn(
+                        'transition-all cursor-pointer',
+                        activeService === service.id && 'ring-1 ring-primary/30'
+                      )}
+                      borderWidth={activeService === service.id ? 2 : 1}
+                    >
+                      <button
+                        onClick={() => setActiveService(service.id)}
+                        className={cn(
+                          'w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all group'
+                        )}
+                      >
+                        <motion.div
+                          className={cn(
+                            'h-10 w-10 rounded-xl flex items-center justify-center transition-all',
+                            activeService === service.id
+                              ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/25'
+                              : 'bg-muted'
+                          )}
+                          animate={{
+                            scale: activeService === service.id ? 1.05 : 1,
+                          }}
+                        >
+                          <service.icon className="h-5 w-5" />
+                        </motion.div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-base font-semibold">{service.title}</div>
+                          <div className="text-sm text-muted-foreground truncate">{service.tagline}</div>
+                        </div>
+                        <ChevronRight className={cn(
+                          'h-5 w-5 text-muted-foreground transition-transform',
+                          activeService === service.id && 'rotate-90 text-primary'
+                        )} />
+                      </button>
+                    </ShineCard>
+                  </motion.div>
                 ))}
               </div>
 
@@ -175,86 +220,138 @@ export default function ServicesPage() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeService}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {/* Description */}
-                  <div className="mb-6">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {currentService.description}
-                    </p>
-                  </div>
-
-                  {/* Features List */}
-                  <div className="mb-6">
-                    <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
-                      What&apos;s included
+                  <GlowCard className="p-6" glowColor="hsl(262, 80%, 60%)" glowSize={300}>
+                    {/* Description */}
+                    <div className="mb-6">
+                      <p className="text-muted-foreground leading-relaxed">
+                        {currentService.description}
+                      </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-                      {currentService.features.map((feature) => (
-                        <div key={feature} className="flex items-center gap-2 text-xs">
-                          <Check className="h-3 w-3 text-primary flex-shrink-0" />
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
-                  {/* Timeline */}
-                  <div className="mb-6">
-                    <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
-                      Typical timeline
-                    </div>
-                    <div className="relative">
-                      {/* Timeline line */}
-                      <div className="absolute left-[7px] top-2 bottom-2 w-px bg-border" />
-
-                      <div className="space-y-3">
-                        {currentService.timeline.map((phase) => (
-                          <div key={phase.phase} className="flex items-start gap-3 relative">
-                            <div className="h-4 w-4 rounded-full border-2 border-primary bg-background flex-shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <span className="text-xs font-medium">{phase.phase}</span>
-                                <span className="text-[10px] text-muted-foreground">{phase.duration}</span>
-                              </div>
-                              <p className="text-[10px] text-muted-foreground">{phase.desc}</p>
+                    {/* Features List */}
+                    <div className="mb-6">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                        What&apos;s included
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                        {currentService.features.map((feature, i) => (
+                          <motion.div
+                            key={feature}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="flex items-center gap-2 text-sm"
+                          >
+                            <div className="h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Check className="h-3 w-3 text-primary" />
                             </div>
-                          </div>
+                            <span>{feature}</span>
+                          </motion.div>
                         ))}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Price & CTA */}
-                  <div className="flex items-center justify-between p-3 rounded-lg border border-border/30 bg-muted/20">
-                    <div>
-                      <div className="text-lg font-bold">{currentService.price}</div>
-                      <div className="text-[10px] text-muted-foreground">No contracts</div>
+                    {/* Timeline */}
+                    <div className="mb-6">
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                        Typical timeline
+                      </div>
+                      <div className="relative">
+                        {/* Animated beam along timeline */}
+                        <Beam className="left-[7px] top-4" duration={3} />
+
+                        {/* Timeline line */}
+                        <div className="absolute left-[7px] top-4 bottom-4 w-px bg-border" />
+
+                        <div className="space-y-4">
+                          {currentService.timeline.map((phase, i) => (
+                            <motion.div
+                              key={phase.phase}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.2 + i * 0.1 }}
+                              className="flex items-start gap-4 relative"
+                            >
+                              <motion.div
+                                className="h-4 w-4 rounded-full border-2 border-primary bg-background flex-shrink-0 mt-0.5"
+                                animate={{ scale: [1, 1.2, 1] }}
+                                transition={{ delay: i * 0.2, duration: 0.5 }}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-semibold">{phase.phase}</span>
+                                  <span className="text-xs text-primary font-medium">{phase.duration}</span>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{phase.desc}</p>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <Link href="/contact">
-                      <ShineButton size="default" className="h-9 text-xs">
-                        Get a quote <ArrowRight className="h-3 w-3 ml-1" />
-                      </ShineButton>
-                    </Link>
-                  </div>
+
+                    {/* Price & CTA */}
+                    <div className="flex items-center justify-between p-4 rounded-xl border border-primary/20 bg-primary/5">
+                      <div>
+                        <div className="text-2xl font-bold">
+                          <GradientText animate={false}>{currentService.price}</GradientText>
+                        </div>
+                        <div className="text-sm text-muted-foreground">No contracts required</div>
+                      </div>
+                      <Link href="/contact">
+                        <MagneticButton className="h-10 px-5 text-sm bg-primary text-primary-foreground rounded-lg font-semibold inline-flex items-center gap-2">
+                          Get a quote
+                          <ArrowRight className="h-4 w-4" />
+                        </MagneticButton>
+                      </Link>
+                    </div>
+                  </GlowCard>
                 </motion.div>
               </AnimatePresence>
             </div>
 
             {/* Right: Interactive Preview */}
             <div className="hidden lg:block">
-              <div className="sticky top-20">
-                <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider mb-2">
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="sticky top-20"
+              >
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   Live preview
                 </div>
-                <ProductDemo defaultTab={currentService.demoTab} />
-              </div>
+                <TiltCard
+                  tiltAmount={6}
+                  glareEnable={true}
+                  glareMaxOpacity={0.15}
+                  scale={1.01}
+                  className="rounded-xl border border-border/50 shadow-2xl shadow-primary/5"
+                >
+                  <ProductDemo defaultTab={currentService.demoTab} />
+                </TiltCard>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </Spotlight>
+
+        {/* Footer */}
+        <footer className="border-t border-border py-8 relative z-10 bg-background/80 backdrop-blur-sm mt-16">
+          <div className="container flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+            <Logo size="lg" to="/" />
+            <div className="flex items-center gap-6 text-muted-foreground">
+              <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+              <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+              <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
+              <span className="text-xs">© {new Date().getFullYear()} Automaire</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </TooltipProvider>
   );

@@ -137,6 +137,7 @@ export function PipelineChart({ data, className }: PipelineChartProps) {
 interface LeadSourceData {
   name: string;
   value: number;
+  [key: string]: string | number;
 }
 
 interface LeadSourcesChartProps {
