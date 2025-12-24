@@ -13,6 +13,7 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -20,6 +21,7 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 
   return (
+    <TooltipProvider delayDuration={200}>
     <DropdownMenu>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -43,5 +45,6 @@ export function ThemeToggle() {
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
+    </TooltipProvider>
   );
 }
