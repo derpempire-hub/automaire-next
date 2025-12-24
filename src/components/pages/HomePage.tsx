@@ -13,9 +13,7 @@ import {
   MeshGradient,
   GradientText,
   WordReveal,
-  TiltCard,
   GlowCard,
-  AnimatedBorder,
   Spotlight,
   MagneticButton,
   Sparkles,
@@ -107,22 +105,14 @@ export default function HomePage() {
               </motion.p>
             </motion.div>
 
-            {/* Product Demo with Tilt Effect */}
+            {/* Product Demo */}
             <motion.div
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ delay: 0.5, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const }}
               className="max-w-4xl mx-auto"
             >
-              <TiltCard
-                tiltAmount={8}
-                glareEnable={true}
-                glareMaxOpacity={0.2}
-                scale={1.01}
-                className="rounded-xl border border-border/50 shadow-2xl shadow-primary/10"
-              >
-                <ProductDemo />
-              </TiltCard>
+              <ProductDemo />
             </motion.div>
 
             {/* Stats with Glow Cards */}
@@ -216,54 +206,46 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="rounded-xl border border-border/50 bg-card shadow-lg overflow-visible"
             >
-              <AnimatedBorder
-                borderWidth={1}
-                duration={4}
-                gradientColors={['hsl(262, 80%, 60%)', 'hsl(190, 80%, 50%)', 'hsl(320, 70%, 55%)', 'hsl(262, 80%, 60%)']}
-                className="overflow-hidden"
-              >
-                <div className="overflow-hidden rounded-xl">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border bg-muted/50">
-                        <th className="p-4 text-left text-xs font-medium text-muted-foreground">Feature</th>
-                        <th className="p-4 text-center text-xs font-medium">Starter</th>
-                        <th className="p-4 text-center text-xs font-medium bg-primary/10 relative">
-                          <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
-                            Popular
-                          </span>
-                          Growth
-                        </th>
-                        <th className="p-4 text-center text-xs font-medium">Scale</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {[
-                        { feature: 'Custom website', starter: '1 page', growth: 'Multi-page', scale: 'Unlimited' },
-                        { feature: 'Workflow designs', starter: '3', growth: '10', scale: '∞' },
-                        { feature: 'AI chat', starter: '✓', growth: '✓', scale: '✓' },
-                        { feature: 'Voice agent', starter: '–', growth: '–', scale: '✓' },
-                        { feature: 'Priority support', starter: '–', growth: '✓', scale: '✓' },
-                      ].map((row, i) => (
-                        <motion.tr
-                          key={row.feature}
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: i * 0.05 }}
-                          className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
-                        >
-                          <td className="p-4 text-muted-foreground font-medium">{row.feature}</td>
-                          <td className="p-4 text-center">{row.starter}</td>
-                          <td className="p-4 text-center bg-primary/5 font-medium">{row.growth}</td>
-                          <td className="p-4 text-center">{row.scale}</td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </AnimatedBorder>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="p-4 text-left text-xs font-medium text-muted-foreground">Feature</th>
+                    <th className="p-4 text-center text-xs font-medium">Starter</th>
+                    <th className="p-4 text-center text-xs font-medium bg-primary/10 relative">
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-full whitespace-nowrap z-10">
+                        Popular
+                      </span>
+                      Growth
+                    </th>
+                    <th className="p-4 text-center text-xs font-medium">Scale</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { feature: 'Custom website', starter: '1 page', growth: 'Multi-page', scale: 'Unlimited' },
+                    { feature: 'Workflow designs', starter: '3', growth: '10', scale: '∞' },
+                    { feature: 'AI chat', starter: '✓', growth: '✓', scale: '✓' },
+                    { feature: 'Voice agent', starter: '–', growth: '–', scale: '✓' },
+                    { feature: 'Priority support', starter: '–', growth: '✓', scale: '✓' },
+                  ].map((row, i) => (
+                    <motion.tr
+                      key={row.feature}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.05 }}
+                      className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors"
+                    >
+                      <td className="p-4 text-muted-foreground font-medium">{row.feature}</td>
+                      <td className="p-4 text-center">{row.starter}</td>
+                      <td className="p-4 text-center bg-primary/5 font-medium">{row.growth}</td>
+                      <td className="p-4 text-center">{row.scale}</td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
             </motion.div>
           </div>
         </section>

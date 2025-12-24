@@ -13,7 +13,6 @@ import {
   MeshGradient,
   GradientText,
   WordReveal,
-  TiltCard,
   GlowCard,
   ShineCard,
   MagneticButton,
@@ -326,15 +325,9 @@ export default function ServicesPage() {
                 <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   Live preview
                 </div>
-                <TiltCard
-                  tiltAmount={6}
-                  glareEnable={true}
-                  glareMaxOpacity={0.15}
-                  scale={1.01}
-                  className="rounded-xl border border-border/50 shadow-2xl shadow-primary/5"
-                >
+                <div className="rounded-xl border border-border/50 shadow-xl bg-card">
                   <ProductDemo defaultTab={currentService.demoTab} />
-                </TiltCard>
+                </div>
               </motion.div>
             </div>
           </div>

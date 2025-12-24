@@ -18,7 +18,6 @@ import {
   MeshGradient,
   GradientText,
   WordReveal,
-  AnimatedBorder,
   GlowCard,
   MagneticButton,
   Spotlight,
@@ -314,12 +313,7 @@ export default function PricingPage() {
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <AnimatedBorder
-                      borderWidth={2}
-                      duration={4}
-                      gradientColors={['hsl(262, 80%, 60%)', 'hsl(190, 80%, 50%)', 'hsl(320, 70%, 55%)', 'hsl(262, 80%, 60%)']}
-                    >
-                      <div className="p-6">
+                    <div className="rounded-xl border-2 border-primary/30 bg-card shadow-xl shadow-primary/5 p-6">
                         <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">
                           Selected Plan
                         </div>
@@ -384,7 +378,6 @@ export default function PricingPage() {
                           </div>
                         ))}
                       </div>
-                    </AnimatedBorder>
                   </motion.div>
                 </AnimatePresence>
 
