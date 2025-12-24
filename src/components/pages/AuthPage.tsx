@@ -124,7 +124,7 @@ export default function AuthPage() {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-2">
-              <Logo size="lg" to="/" />
+              <Logo size="xl" to="/" />
             </div>
             <p className="text-muted-foreground mt-2">
               Welcome to your dashboard

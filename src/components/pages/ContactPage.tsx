@@ -71,7 +71,7 @@ export default function ContactPage() {
             <Link href="/" className="flex items-center text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="h-4 w-4" />
             </Link>
-            <Logo size="md" />
+            <Logo size="xl" />
           </div>
           <ThemeToggle />
         </div>

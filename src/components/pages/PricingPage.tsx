@@ -128,7 +128,7 @@ export default function PricingPage() {
         {/* Nav */}
         <nav className="border-b border-border/30 bg-background/80 backdrop-blur-sm sticky top-0 z-50">
           <div className="container flex h-12 items-center justify-between">
-            <Logo size="md" />
+            <Logo size="xl" />
             <div className="flex items-center gap-4">
               <ThemeToggle />
               <Link href="/" className="text-muted-foreground hover:text-foreground text-xs">

@@ -24,7 +24,7 @@ export default function HomePage() {
           className="fixed top-0 left-0 right-0 z-50 border-b border-border/30 bg-background/80 backdrop-blur-sm"
         >
           <div className="container flex h-14 md:h-16 items-center justify-between overflow-visible">
-            <Logo size="md" />
+            <Logo size="xl" />
             <div className="flex items-center gap-2 md:gap-4">
               {/* Theme Toggle */}
               <ThemeToggle />
@@ -198,7 +198,7 @@ export default function HomePage() {
         {/* Footer */}
         <footer className="border-t border-border py-6">
           <div className="container flex items-center justify-between text-sm">
-            <Logo size="sm" to="/" />
+            <Logo size="lg" to="/" />
             <div className="flex items-center gap-6 text-muted-foreground">
               <Link href="/services" className="hover:text-foreground transition-colors">Services</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
