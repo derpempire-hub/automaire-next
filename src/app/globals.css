@@ -1,0 +1,213 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Automaire Design System
+ * Inspired by: Linear, Notion, Vercel
+ * Philosophy: Clean, calm, confident
+ */
+
+@layer base {
+  :root {
+    /* Neutral, warm-tinted backgrounds */
+    --background: 0 0% 99%;
+    --foreground: 240 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
+    /* Refined purple - slightly muted for professionalism */
+    --primary: 262 60% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Subtle secondary */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 30%;
+
+    /* Muted grays */
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 46%;
+
+    /* Accent - same as primary for consistency */
+    --accent: 262 60% 96%;
+    --accent-foreground: 262 60% 45%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Very subtle borders */
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 262 60% 55%;
+
+    /* Tighter radius */
+    --radius: 0.5rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 99%;
+    --sidebar-foreground: 240 10% 30%;
+    --sidebar-primary: 262 60% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 262 60% 96%;
+    --sidebar-accent-foreground: 262 60% 45%;
+    --sidebar-border: 240 6% 92%;
+    --sidebar-ring: 262 60% 55%;
+
+    /* Semantic colors */
+    --success: 142 70% 40%;
+    --success-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 92%;
+
+    --card: 240 10% 6%;
+    --card-foreground: 0 0% 92%;
+
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 92%;
+
+    --primary: 262 60% 65%;
+    --primary-foreground: 240 10% 4%;
+
+    --secondary: 240 5% 12%;
+    --secondary-foreground: 0 0% 70%;
+
+    --muted: 240 5% 14%;
+    --muted-foreground: 240 5% 55%;
+
+    --accent: 262 40% 15%;
+    --accent-foreground: 262 60% 75%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5% 16%;
+    --input: 240 5% 16%;
+    --ring: 262 60% 65%;
+
+    /* Sidebar - dark mode */
+    --sidebar-background: 240 10% 5%;
+    --sidebar-foreground: 0 0% 85%;
+    --sidebar-primary: 262 60% 65%;
+    --sidebar-primary-foreground: 240 10% 4%;
+    --sidebar-accent: 262 40% 15%;
+    --sidebar-accent-foreground: 262 60% 75%;
+    --sidebar-border: 240 5% 14%;
+    --sidebar-ring: 262 60% 65%;
+
+    --success: 142 60% 50%;
+    --success-foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+  }
+
+  /* Typography hierarchy */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+
+  h1 { @apply text-3xl md:text-4xl; }
+  h2 { @apply text-2xl md:text-3xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  h4 { @apply text-lg; }
+
+  /* Subtle selection color */
+  ::selection {
+    background: hsl(262 60% 55% / 0.15);
+  }
+}
+
+/* Minimal utility classes */
+@layer utilities {
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Subtle hover state */
+  .hover-bg {
+    @apply transition-colors hover:bg-muted/50;
+  }
+
+  /* Clean focus ring */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
+  }
+
+  /* Keyboard shortcut styling */
+  .kbd {
+    @apply inline-flex items-center justify-center px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-mono font-medium border border-border/50;
+  }
+
+  /* Section label - consistent styling */
+  .section-label {
+    @apply text-[10px] font-medium text-muted-foreground uppercase tracking-wider;
+  }
+
+  /* Status indicators - consistent colors */
+  .status-new { @apply bg-blue-500/10 text-blue-600; }
+  .status-active { @apply bg-green-500/10 text-green-600; }
+  .status-pending { @apply bg-yellow-500/10 text-yellow-600; }
+  .status-complete { @apply bg-emerald-500/10 text-emerald-600; }
+  .status-error { @apply bg-red-500/10 text-red-600; }
+}
+
+/* Animation classes - minimal, functional */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@layer utilities {
+  .animate-fade-up {
+    animation: fade-up 0.3s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out forwards;
+  }
+
+  /* Staggered fade for lists */
+  .animate-stagger > * {
+    opacity: 0;
+    animation: fade-up 0.3s ease-out forwards;
+  }
+
+  .animate-stagger > *:nth-child(1) { animation-delay: 0ms; }
+  .animate-stagger > *:nth-child(2) { animation-delay: 50ms; }
+  .animate-stagger > *:nth-child(3) { animation-delay: 100ms; }
+  .animate-stagger > *:nth-child(4) { animation-delay: 150ms; }
+  .animate-stagger > *:nth-child(5) { animation-delay: 200ms; }
+}
