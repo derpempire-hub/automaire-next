@@ -1,11 +1,15 @@
+'use client';
+
 import * as React from 'react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { 
-  LucideIcon, Plus, Upload, ArrowRight, 
-  Users, Building2, FolderKanban, CheckSquare, 
+import {
+  LucideIcon, Plus, Upload, ArrowRight,
+  Users, Building2, FolderKanban, CheckSquare,
   FileText, Search, Activity, Sparkles, Zap, Kanban
 } from 'lucide-react';
+import { FloatingElement } from '@/components/animations/GlowingNode';
 
 interface EmptyStateAction {
   label: string;
@@ -371,16 +375,16 @@ export function WelcomeCard({ userName, steps, onDismiss }: WelcomeCardProps) {
                 onClick={step.onClick}
                 className={cn(
                   'flex items-center gap-2 text-sm w-full text-left py-1 transition-colors',
-                  step.completed 
-                    ? 'text-muted-foreground line-through' 
+                  step.completed
+                    ? 'text-muted-foreground line-through'
                     : 'text-foreground hover:text-primary',
                   step.onClick && 'cursor-pointer'
                 )}
               >
                 <div className={cn(
                   'h-4 w-4 rounded-full border flex items-center justify-center flex-shrink-0',
-                  step.completed 
-                    ? 'bg-primary border-primary' 
+                  step.completed
+                    ? 'bg-primary border-primary'
                     : 'border-border'
                 )}>
                   {step.completed && (
@@ -396,5 +400,266 @@ export function WelcomeCard({ userName, steps, onDismiss }: WelcomeCardProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ============================================
+// ANIMATED EMPTY STATES
+// ============================================
+
+interface AnimatedEmptyStateProps {
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  actionLabel?: string;
+  onAction?: () => void;
+  className?: string;
+  iconColor?: string;
+  children?: React.ReactNode;
+}
+
+export function AnimatedEmptyState({
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+  className,
+  iconColor = 'hsl(262, 80%, 60%)',
+  children,
+}: AnimatedEmptyStateProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={cn(
+        'flex flex-col items-center justify-center py-16 px-4 text-center',
+        className
+      )}
+    >
+      {/* Animated icon container */}
+      <FloatingElement duration={4} distance={8}>
+        <div className="relative mb-6">
+          {/* Glow effect */}
+          <motion.div
+            className="absolute inset-0 blur-xl rounded-full"
+            style={{ backgroundColor: iconColor }}
+            animate={{
+              opacity: [0.1, 0.25, 0.1],
+              scale: [0.9, 1.1, 0.9],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+
+          {/* Icon background */}
+          <div
+            className="relative w-20 h-20 rounded-2xl flex items-center justify-center border border-white/10"
+            style={{
+              backgroundColor: `${iconColor}15`,
+              boxShadow: `0 0 40px ${iconColor}20`,
+            }}
+          >
+            <Icon
+              className="w-10 h-10"
+              style={{ color: iconColor }}
+            />
+          </div>
+
+          {/* Orbiting dots */}
+          <motion.div
+            className="absolute inset-0"
+            animate={{ rotate: 360 }}
+            transition={{
+              duration: 20,
+              repeat: Infinity,
+              ease: 'linear',
+            }}
+          >
+            <motion.div
+              className="absolute w-2 h-2 rounded-full"
+              style={{
+                backgroundColor: iconColor,
+                top: -4,
+                left: '50%',
+                marginLeft: -4,
+              }}
+              animate={{
+                opacity: [0.3, 0.8, 0.3],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+              }}
+            />
+          </motion.div>
+        </div>
+      </FloatingElement>
+
+      {/* Text content */}
+      <motion.h3
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="text-xl font-semibold mb-2"
+      >
+        {title}
+      </motion.h3>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="text-muted-foreground max-w-sm mb-6"
+      >
+        {description}
+      </motion.p>
+
+      {/* Action button */}
+      {actionLabel && onAction && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Button onClick={onAction} className="gap-2">
+            <Plus className="h-4 w-4" />
+            {actionLabel}
+          </Button>
+        </motion.div>
+      )}
+
+      {/* Custom content */}
+      {children}
+    </motion.div>
+  );
+}
+
+// Mini animated workflow for automation empty state
+function MiniWorkflowDiagram() {
+  const nodes = [
+    { color: 'hsl(152, 80%, 45%)', delay: 0 },
+    { color: 'hsl(210, 80%, 55%)', delay: 0.2 },
+    { color: 'hsl(262, 80%, 60%)', delay: 0.4 },
+  ];
+
+  return (
+    <div className="flex items-center gap-3">
+      {nodes.map((node, i) => (
+        <div key={i} className="flex items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: node.delay, duration: 0.4 }}
+            className="relative"
+          >
+            {/* Glow */}
+            <motion.div
+              className="absolute inset-0 blur-lg rounded-lg"
+              style={{ backgroundColor: node.color }}
+              animate={{
+                opacity: [0.2, 0.4, 0.2],
+              }}
+              transition={{
+                duration: 2,
+                delay: node.delay,
+                repeat: Infinity,
+              }}
+            />
+
+            {/* Node */}
+            <div
+              className="relative w-12 h-12 rounded-lg border border-white/10 flex items-center justify-center"
+              style={{
+                backgroundColor: `${node.color}20`,
+              }}
+            >
+              <Zap
+                className="w-5 h-5"
+                style={{ color: node.color }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Connector */}
+          {i < nodes.length - 1 && (
+            <div className="relative w-8 h-0.5 mx-1">
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{ backgroundColor: `${node.color}30` }}
+              />
+              <motion.div
+                className="absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: node.color,
+                  boxShadow: `0 0 8px ${node.color}`,
+                }}
+                animate={{
+                  left: ['0%', '100%'],
+                }}
+                transition={{
+                  duration: 1.5,
+                  delay: node.delay + 0.5,
+                  repeat: Infinity,
+                  ease: 'linear',
+                }}
+              />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Animated workflow empty state with mini diagram
+export function AnimatedWorkflowEmptyState({ onAdd }: { onAdd?: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center py-16 px-4 text-center"
+    >
+      {/* Mini workflow animation */}
+      <div className="relative mb-8">
+        <MiniWorkflowDiagram />
+      </div>
+
+      <motion.h3
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="text-xl font-semibold mb-2"
+      >
+        Automate your workflows
+      </motion.h3>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="text-muted-foreground max-w-sm mb-6"
+      >
+        Create powerful automations with triggers, actions, and AI. Save time and never miss an opportunity.
+      </motion.p>
+
+      {onAdd && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <Button onClick={onAdd} className="gap-2">
+            <Zap className="h-4 w-4" />
+            Create Workflow
+          </Button>
+        </motion.div>
+      )}
+    </motion.div>
   );
 }

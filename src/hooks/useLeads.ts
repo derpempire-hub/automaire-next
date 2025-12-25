@@ -38,7 +38,7 @@ export function useLead(id: string | null) {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as Lead & { companies: { name: string } | null };
     },
     enabled: !!id,
   });
@@ -102,6 +102,74 @@ export function useCreateLead() {
     },
     onError: () => {
       toast.error('Failed to create lead');
+    },
+  });
+}
+
+export function useUpdateLead() {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      ...updates
+    }: {
+      id: string;
+      first_name?: string;
+      last_name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+      job_title?: string | null;
+      company_id?: string | null;
+      source?: string | null;
+      source_notes?: string | null;
+      notes?: string | null;
+      status?: Lead['status'];
+    }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
+        .from('leads')
+        .update({ ...updates, updated_at: new Date().toISOString() })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      queryClient.invalidateQueries({ queryKey: ['lead'] });
+      toast.success('Lead updated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to update lead');
+    },
+  });
+}
+
+export function useDeleteLead() {
+  const supabase = createClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error } = await (supabase as any)
+        .from('leads')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['leads'] });
+      queryClient.invalidateQueries({ queryKey: ['lead'] });
+      toast.success('Lead deleted successfully');
+    },
+    onError: () => {
+      toast.error('Failed to delete lead');
     },
   });
 }

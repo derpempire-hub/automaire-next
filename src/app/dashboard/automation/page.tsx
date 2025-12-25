@@ -1,14 +1,84 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Plus, Zap, Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Plus,
+  Zap,
+  Lock,
+  Sparkles,
+  ArrowRight,
+  MoreHorizontal,
+  Pencil,
+  Copy,
+  Trash2,
+  ExternalLink,
+} from 'lucide-react';
+import { AnimatedWorkflowEmptyState } from '@/components/ui/empty-state';
 import { usePermissions } from '@/hooks/useEntitlements';
-import Link from 'next/link';
+import { useWorkflows, useCreateWorkflow, useDeleteWorkflow, useDuplicateWorkflow } from '@/hooks/useWorkflows';
+import { formatDistanceToNow } from 'date-fns';
+
+const STATUS_BADGES: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline' | 'destructive' }> = {
+  draft: { label: 'Draft', variant: 'secondary' },
+  pending_review: { label: 'Pending Review', variant: 'default' },
+  in_implementation: { label: 'In Progress', variant: 'default' },
+  active: { label: 'Active', variant: 'default' },
+  paused: { label: 'Paused', variant: 'outline' },
+};
 
 export default function AutomationPage() {
+  const router = useRouter();
   const { workflowBuilderEnabled, isInternalAdmin } = usePermissions();
   const hasAccess = workflowBuilderEnabled || isInternalAdmin;
+
+  const { data: workflows = [], isLoading } = useWorkflows();
+  const createWorkflow = useCreateWorkflow();
+  const deleteWorkflow = useDeleteWorkflow();
+  const duplicateWorkflow = useDuplicateWorkflow();
+
+  const handleCreateWorkflow = async () => {
+    try {
+      const workflow = await createWorkflow.mutateAsync({ name: 'Untitled Workflow' });
+      router.push(`/dashboard/automation/${workflow.id}`);
+    } catch {
+      // Error handled by mutation
+    }
+  };
+
+  const handleDeleteWorkflow = (id: string) => {
+    if (window.confirm('Are you sure you want to delete this workflow?')) {
+      deleteWorkflow.mutate(id);
+    }
+  };
+
+  const handleDuplicateWorkflow = async (id: string) => {
+    try {
+      const workflow = await duplicateWorkflow.mutateAsync(id);
+      router.push(`/dashboard/automation/${workflow.id}`);
+    } catch {
+      // Error handled by mutation
+    }
+  };
 
   // Locked state for users without access
   if (!hasAccess) {
@@ -74,6 +144,63 @@ export default function AutomationPage() {
     );
   }
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold flex items-center gap-2">
+              <Zap className="h-6 w-6 text-primary" />
+              Workflow Designer
+            </h1>
+            <p className="text-muted-foreground">
+              Design your automation logic — we handle the implementation
+            </p>
+          </div>
+          <Button disabled>
+            <Plus className="h-4 w-4 mr-2" />
+            New Workflow
+          </Button>
+        </div>
+
+        <div className="border rounded-lg">
+          <div className="p-4 space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-16 w-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (workflows.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold flex items-center gap-2">
+              <Zap className="h-6 w-6 text-primary" />
+              Workflow Designer
+            </h1>
+            <p className="text-muted-foreground">
+              Design your automation logic — we handle the implementation
+            </p>
+          </div>
+          <Button onClick={handleCreateWorkflow} disabled={createWorkflow.isPending}>
+            <Plus className="h-4 w-4 mr-2" />
+            New Workflow
+          </Button>
+        </div>
+
+        <AnimatedWorkflowEmptyState onAdd={handleCreateWorkflow} />
+      </div>
+    );
+  }
+
+  // Workflows list
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -86,45 +213,82 @@ export default function AutomationPage() {
             Design your automation logic — we handle the implementation
           </p>
         </div>
-        <Button>
+        <Button onClick={handleCreateWorkflow} disabled={createWorkflow.isPending}>
           <Plus className="h-4 w-4 mr-2" />
-          Design Workflow
+          New Workflow
         </Button>
       </div>
 
-      <div className="border-2 border-dashed rounded-xl p-12 text-center bg-muted/20">
-        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mx-auto mb-6">
-          <Zap className="h-10 w-10 text-primary" />
-        </div>
-        <h3 className="text-xl font-semibold mb-2">Design your first workflow</h3>
-        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-          You design the workflow logic — our team implements and maintains the execution. Focus on
-          what should happen, not how to build it.
-        </p>
-        <Button size="lg">
-          <Plus className="h-4 w-4 mr-2" />
-          Start Designing
-        </Button>
-
-        <div className="mt-8 grid grid-cols-4 gap-4 max-w-2xl mx-auto">
-          {[
-            { icon: '⚡', label: 'Triggers', desc: 'When to start' },
-            { icon: '🎯', label: 'Actions', desc: 'What to do' },
-            { icon: '🤖', label: 'AI Steps', desc: 'Smart automation' },
-            { icon: '🔧', label: 'Logic', desc: 'Conditions & delays' },
-          ].map((item) => (
-            <div key={item.label} className="text-center p-3 rounded-lg bg-background border">
-              <div className="text-2xl mb-1">{item.icon}</div>
-              <p className="text-sm font-medium">{item.label}</p>
-              <p className="text-[10px] text-muted-foreground">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-
-        <p className="mt-8 text-xs text-muted-foreground max-w-sm mx-auto">
-          Advanced changes and custom integrations are handled by our team.
-        </p>
-      </div>
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Last Updated</TableHead>
+              <TableHead className="w-[50px]"></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {workflows.map((workflow) => {
+              const status = STATUS_BADGES[workflow.status] || STATUS_BADGES.draft;
+              return (
+                <TableRow key={workflow.id} className="group">
+                  <TableCell>
+                    <Link
+                      href={`/dashboard/automation/${workflow.id}`}
+                      className="font-medium hover:underline flex items-center gap-2"
+                    >
+                      {workflow.name}
+                      <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-50" />
+                    </Link>
+                    {workflow.description && (
+                      <p className="text-sm text-muted-foreground truncate max-w-md">
+                        {workflow.description}
+                      </p>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={status.variant}>{status.label}</Badge>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDistanceToNow(new Date(workflow.updated_at), { addSuffix: true })}
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link href={`/dashboard/automation/${workflow.id}`}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDuplicateWorkflow(workflow.id)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => handleDeleteWorkflow(workflow.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </Card>
     </div>
   );
 }

@@ -26,3 +26,8 @@ export {
   Sparkles,
   PulseRing,
 } from './GlowEffects';
+
+// Workflow Animations
+export { FlowingParticles, FlowingLine } from './FlowingParticles';
+export { GlowingNode, FloatingElement } from './GlowingNode';
+export { WorkflowDiagram, VerticalWorkflowDiagram, WorkflowIcon } from './WorkflowDiagram';

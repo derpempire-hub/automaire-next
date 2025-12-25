@@ -2,16 +2,20 @@
 
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { Users, Building2, FileText, FolderKanban, CheckSquare, Sparkles, ArrowRight, TrendingUp } from 'lucide-react';
+import { Users, Building2, FileText, FolderKanban, CheckSquare, Sparkles, ArrowRight, TrendingUp, ClipboardList, Globe, MessageSquare, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@/components/ui/badge';
 import { useLeads } from '@/hooks/useLeads';
 import { useCompanies } from '@/hooks/useCompanies';
 import { useTasks } from '@/hooks/useTasks';
 import { useProposals } from '@/hooks/useProposals';
 import { useProjects } from '@/hooks/useProjects';
+import { useServiceRequests } from '@/hooks/useServiceRequests';
+import { ServiceRequestStatusBadge } from '@/components/service-intake/ServiceRequestStatusBadge';
+import type { ServiceType } from '@/types/service-intake';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,19 +48,34 @@ export default function DashboardHome() {
   const { data: tasks = [], isLoading: tasksLoading } = useTasks();
   const { data: proposals = [], isLoading: proposalsLoading } = useProposals();
   const { data: projects = [], isLoading: projectsLoading } = useProjects();
+  const { data: serviceRequests = [], isLoading: serviceRequestsLoading } = useServiceRequests();
 
-  const isLoading = leadsLoading || companiesLoading || tasksLoading || proposalsLoading || projectsLoading;
+  const isLoading = leadsLoading || companiesLoading || tasksLoading || proposalsLoading || projectsLoading || serviceRequestsLoading;
 
   const pendingTasks = useMemo(() => tasks.filter(t => t.status !== 'completed').length, [tasks]);
   const activeProjects = useMemo(() => projects.filter(p => p.status === 'in_progress' || p.status === 'not_started').length, [projects]);
   const pendingProposals = useMemo(() => proposals.filter(p => p.status === 'sent' || p.status === 'draft').length, [proposals]);
+  const activeServiceRequests = useMemo(() => serviceRequests.filter(r => r.status !== 'completed' && r.status !== 'cancelled').length, [serviceRequests]);
+  const recentServiceRequests = useMemo(() => serviceRequests.slice(0, 3), [serviceRequests]);
+
+  const SERVICE_ICONS: Record<ServiceType, React.ReactNode> = {
+    website: <Globe className="h-4 w-4" />,
+    chatbot: <MessageSquare className="h-4 w-4" />,
+    voice_agent: <Phone className="h-4 w-4" />,
+  };
+
+  const SERVICE_LABELS: Record<ServiceType, string> = {
+    website: 'Website',
+    chatbot: 'Chatbot',
+    voice_agent: 'Voice Agent',
+  };
 
   const kpis = [
     { title: 'Total Leads', value: leads.length, subtitle: 'Active prospects', icon: Users, href: '/dashboard/leads', color: 'text-blue-500' },
     { title: 'Companies', value: companies.length, subtitle: 'Organizations', icon: Building2, href: '/dashboard/companies', color: 'text-purple-500' },
     { title: 'Proposals', value: pendingProposals, subtitle: 'Pending review', icon: FileText, href: '/dashboard/proposals', color: 'text-orange-500' },
     { title: 'Projects', value: activeProjects, subtitle: 'In progress', icon: FolderKanban, href: '/dashboard/projects', color: 'text-green-500' },
-    { title: 'Tasks', value: pendingTasks, subtitle: 'Pending', icon: CheckSquare, href: '/dashboard/tasks', color: 'text-pink-500' },
+    { title: 'Service Requests', value: activeServiceRequests, subtitle: 'Active requests', icon: ClipboardList, href: '/dashboard/service-requests', color: 'text-cyan-500' },
   ];
 
   const totalItems = leads.length + companies.length + proposals.length + projects.length + tasks.length;
@@ -129,7 +148,7 @@ export default function DashboardHome() {
               { label: 'Add Lead', href: '/dashboard/leads?action=add', icon: Users, color: 'bg-blue-500' },
               { label: 'Create Task', href: '/dashboard/tasks?action=add', icon: CheckSquare, color: 'bg-pink-500' },
               { label: 'New Proposal', href: '/dashboard/proposals?action=add', icon: FileText, color: 'bg-orange-500' },
-              { label: 'View Pipeline', href: '/dashboard/pipeline', icon: TrendingUp, color: 'bg-green-500' },
+              { label: 'New Service Request', href: '/dashboard/service-requests', icon: ClipboardList, color: 'bg-cyan-500' },
             ].map((action) => (
               <Button key={action.label} variant="outline" className="h-auto py-4 justify-start gap-3 hover:bg-muted/50" onClick={() => router.push(action.href)}>
                 <div className={`p-2 rounded-lg ${action.color} text-white`}>
@@ -137,6 +156,44 @@ export default function DashboardHome() {
                 </div>
                 <span>{action.label}</span>
               </Button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Recent Service Requests */}
+      {recentServiceRequests.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.4 }}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">Recent Service Requests</h2>
+            <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/service-requests')}>
+              View All
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Button>
+          </div>
+          <div className="grid gap-3">
+            {recentServiceRequests.map((request) => (
+              <Card
+                key={request.id}
+                className="cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => router.push(`/dashboard/service-requests/${request.id}`)}
+              >
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-muted">
+                      {SERVICE_ICONS[request.service_type]}
+                    </div>
+                    <div>
+                      <p className="font-medium">{request.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {SERVICE_LABELS[request.service_type]}
+                        {request.business_name && ` • ${request.business_name}`}
+                      </p>
+                    </div>
+                  </div>
+                  <ServiceRequestStatusBadge status={request.status} />
+                </CardContent>
+              </Card>
             ))}
           </div>
         </motion.div>

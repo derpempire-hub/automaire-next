@@ -1,8 +1,12 @@
-// Placeholder types for Supabase database
+// Supabase database types
 
 export interface Database {
   public: {
     Tables: {
+      profiles: { Row: Profile };
+      workspaces: { Row: Workspace };
+      workspace_members: { Row: WorkspaceMember };
+      workspace_invitations: { Row: WorkspaceInvitation };
       leads: { Row: Lead };
       companies: { Row: Company };
       tasks: { Row: Task };
@@ -13,8 +17,65 @@ export interface Database {
   };
 }
 
+// =============================================
+// User & Workspace Types
+// =============================================
+
+export type WorkspaceRole = 'owner' | 'admin' | 'member' | 'viewer';
+
+export interface Profile {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+  phone: string | null;
+  job_title: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  owner_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: WorkspaceRole;
+  invited_at: string;
+  joined_at: string | null;
+  invited_by: string | null;
+  // Joined data
+  profile?: Profile;
+}
+
+export interface WorkspaceInvitation {
+  id: string;
+  workspace_id: string;
+  email: string;
+  role: WorkspaceRole;
+  token: string;
+  expires_at: string;
+  created_at: string;
+  invited_by: string;
+  // Joined data
+  workspace?: Workspace;
+  inviter?: Profile;
+}
+
+// =============================================
+// CRM Types (with workspace_id)
+// =============================================
+
 export interface Lead {
   id: string;
+  workspace_id: string | null;
   first_name: string;
   last_name: string | null;
   email: string | null;
@@ -31,6 +92,7 @@ export interface Lead {
 
 export interface Company {
   id: string;
+  workspace_id: string | null;
   name: string;
   website: string | null;
   industry: string | null;
@@ -42,6 +104,7 @@ export interface Company {
 
 export interface Task {
   id: string;
+  workspace_id: string | null;
   title: string;
   description: string | null;
   due_date: string | null;
@@ -55,6 +118,7 @@ export interface Task {
 
 export interface Proposal {
   id: string;
+  workspace_id: string | null;
   title: string;
   company_id: string | null;
   lead_id: string | null;
@@ -71,6 +135,7 @@ export interface Proposal {
 
 export interface Project {
   id: string;
+  workspace_id: string | null;
   title: string;
   description: string | null;
   company_id: string | null;
@@ -84,6 +149,7 @@ export interface Project {
 
 export interface Workflow {
   id: string;
+  workspace_id: string | null;
   name: string;
   description: string | null;
   status: 'draft' | 'active' | 'paused';

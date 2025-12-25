@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles as SparklesIcon } from 'lucide-react';
+import { ArrowRight, Sparkles as SparklesIcon, Globe, Zap, Bot, Check } from 'lucide-react';
 import { ShineButton } from '@/components/landing/ShineButton';
-import { ProductDemo } from '@/components/landing/ProductDemo';
+import { HeroServiceShowcase } from '@/components/landing/HeroServiceShowcase';
+import { GridBackground, ParticleField } from '@/components/landing/FloatingElements';
 import { AnimatedCounter } from '@/components/landing/AnimatedCounter';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -56,40 +57,44 @@ export default function HomePage() {
           </div>
         </motion.nav>
 
-        {/* Hero with Spotlight Effect */}
-        <Spotlight className="relative pt-24 pb-12" spotlightSize={600} spotlightColor="rgba(120, 80, 220, 0.08)">
+        {/* Hero Section */}
+        <section className="relative pt-24 pb-16 overflow-hidden">
+          {/* Animated Backgrounds */}
+          <GridBackground className="opacity-50" />
+          <ParticleField />
+
           <div className="container relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-center mb-8"
+              className="text-center mb-10"
             >
               {/* Animated Badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-xs text-primary mb-6"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-sm text-primary mb-6"
               >
                 <motion.span
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="h-2 w-2 rounded-full bg-green-500"
                 />
-                <span>5 founding slots available</span>
-                <SparklesIcon className="h-3 w-3" />
+                <span>Your automation agency</span>
+                <SparklesIcon className="h-3.5 w-3.5" />
               </motion.div>
 
               {/* Hero Title with Word Reveal */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
-                <WordReveal delay={0.5} staggerChildren={0.1}>
-                  Design workflows visually.
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6">
+                <WordReveal delay={0.5} staggerChildren={0.08}>
+                  Websites. Automation.
                 </WordReveal>
                 <br />
-                <span className="text-muted-foreground">
-                  <WordReveal delay={0.8} staggerChildren={0.1}>
-                    We handle the execution.
+                <span className="text-primary">
+                  <WordReveal delay={0.9} staggerChildren={0.08}>
+                    AI Agents.
                   </WordReveal>
                 </span>
               </h1>
@@ -98,40 +103,60 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.2, duration: 0.5 }}
-                className="text-lg text-muted-foreground max-w-lg mx-auto"
+                className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8"
               >
-                You map the logic — our team implements, deploys, and maintains your{' '}
-                <GradientText>automations</GradientText>.
+                We build <GradientText>custom websites</GradientText>, design intelligent{' '}
+                <GradientText>automations</GradientText>, and deploy{' '}
+                <GradientText>AI agents</GradientText> that work 24/7.
               </motion.p>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4, duration: 0.5 }}
+                className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+              >
+                <Link href="/contact">
+                  <MagneticButton className="h-12 px-8 text-base bg-primary text-primary-foreground rounded-lg font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all inline-flex items-center gap-2 whitespace-nowrap">
+                    Start Your Project
+                    <ArrowRight className="h-5 w-5 flex-shrink-0" />
+                  </MagneticButton>
+                </Link>
+                <Link href="/services" className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
+                  View Services
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </motion.div>
             </motion.div>
 
-            {/* Product Demo */}
+            {/* Service Showcase */}
             <motion.div
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const }}
-              className="max-w-4xl mx-auto"
+              transition={{ delay: 0.6, duration: 0.8, ease: [0.25, 0.1, 0.25, 1] as const }}
+              className="max-w-5xl mx-auto"
             >
-              <ProductDemo />
+              <HeroServiceShowcase />
             </motion.div>
 
-            {/* Stats with Glow Cards */}
+            {/* Stats */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="flex items-center justify-center gap-6 md:gap-12 mt-10"
+              transition={{ delay: 1 }}
+              className="flex items-center justify-center gap-8 md:gap-16 mt-12"
             >
               {[
-                { value: 50, suffix: '%', label: 'Faster delivery' },
-                { value: 2595, label: 'Runs per month' },
+                { value: 50, suffix: '+', label: 'Projects Delivered' },
                 { value: 99.9, suffix: '%', label: 'Uptime SLA' },
+                { value: 24, suffix: '/7', label: 'AI Support' },
               ].map((stat, i) => (
                 <motion.div
                   key={stat.label}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 + i * 0.1 }}
+                  transition={{ delay: 1.2 + i * 0.1 }}
                   className="text-center"
                 >
                   <div className="text-3xl md:text-4xl font-bold tabular-nums">
@@ -144,44 +169,82 @@ export default function HomePage() {
               ))}
             </motion.div>
           </div>
-        </Spotlight>
+        </section>
 
-        {/* How It Works with Glow Cards */}
+        {/* Our Services Section */}
         <section className="py-20 border-t border-border relative">
           <Sparkles count={15} color="hsl(262, 80%, 70%)" className="opacity-30" />
           <div className="container relative z-10">
             <div className="flex items-center justify-between mb-10">
-              <h2 className="text-2xl font-bold">
-                <GradientText>How it works</GradientText>
-              </h2>
+              <div>
+                <h2 className="text-3xl font-bold mb-2">
+                  <GradientText>What We Build</GradientText>
+                </h2>
+                <p className="text-muted-foreground">End-to-end solutions for modern businesses</p>
+              </div>
               <Link href="/services" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors group">
-                View services
+                All services
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { step: '01', title: 'Design', desc: 'Map your workflow visually', detail: 'Drag-and-drop intent capture with our intuitive builder' },
-                { step: '02', title: 'Submit', desc: 'We review and implement', detail: 'Our expert team builds the execution layer' },
-                { step: '03', title: 'Monitor', desc: 'Track runs and results', detail: 'Live logs, analytics, and performance insights' },
+                {
+                  icon: Globe,
+                  color: 'hsl(210, 80%, 55%)',
+                  title: 'Custom Websites',
+                  desc: 'Beautiful, fast, conversion-focused',
+                  features: ['Responsive Design', 'SEO Optimized', 'CMS Integration', 'Analytics'],
+                },
+                {
+                  icon: Zap,
+                  color: 'hsl(262, 80%, 60%)',
+                  title: 'AI Automation',
+                  desc: 'Workflows that run while you sleep',
+                  features: ['Lead Scoring', 'Email Sequences', 'CRM Sync', 'Custom Integrations'],
+                },
+                {
+                  icon: Bot,
+                  color: 'hsl(152, 80%, 45%)',
+                  title: 'AI Agents',
+                  desc: 'Conversational AI that converts',
+                  features: ['24/7 Chat Support', 'Voice Agents', 'Lead Qualification', 'Appointment Booking'],
+                },
               ].map((item, i) => (
                 <motion.div
-                  key={item.step}
+                  key={item.title}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-50px' }}
                   transition={{ delay: i * 0.15, duration: 0.5 }}
                 >
-                  <GlowCard className="h-full p-6" glowColor="hsl(262, 80%, 60%)" glowSize={250}>
+                  <GlowCard className="h-full p-6" glowColor={item.color} glowSize={250}>
                     <div className="relative">
-                      <div className="absolute -top-2 -left-2 opacity-20">
-                        <PulseRing size={40} rings={2} color="hsl(262, 80%, 60%)" />
-                      </div>
-                      <div className="text-xs font-mono text-primary mb-3">{item.step}</div>
+                      {/* Icon */}
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        className="h-12 w-12 rounded-xl flex items-center justify-center mb-4"
+                        style={{
+                          backgroundColor: `${item.color}20`,
+                          color: item.color,
+                        }}
+                      >
+                        <item.icon className="h-6 w-6" />
+                      </motion.div>
+
                       <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                      <p className="text-muted-foreground mb-2">{item.desc}</p>
-                      <p className="text-sm text-muted-foreground/60">{item.detail}</p>
+                      <p className="text-muted-foreground mb-4">{item.desc}</p>
+
+                      {/* Features */}
+                      <ul className="space-y-2">
+                        {item.features.map((feature) => (
+                          <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Check className="h-4 w-4" style={{ color: item.color }} />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </GlowCard>
                 </motion.div>

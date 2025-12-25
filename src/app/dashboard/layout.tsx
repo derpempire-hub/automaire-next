@@ -17,6 +17,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/dashboard/AppSidebar';
 import { Separator } from '@/components/ui/separator';
+import { WorkspaceProvider } from '@/providers/WorkspaceProvider';
 
 // Dynamic imports with SSR disabled to prevent hydration errors from Radix UI
 const CommandPalette = dynamic(() => import('@/components/CommandPalette').then(mod => mod.CommandPalette), { ssr: false });
@@ -54,26 +55,28 @@ export default function DashboardLayout({
   });
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        {/* Header */}
-        <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <div className="flex-1">
-            <h1 className="text-lg font-semibold">{currentPage?.title || 'Dashboard'}</h1>
-          </div>
-          <CommandPaletteHint />
-          <ThemeToggle />
-        </header>
-        <CommandPalette />
+    <WorkspaceProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          {/* Header */}
+          <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <div className="flex-1">
+              <h1 className="text-lg font-semibold">{currentPage?.title || 'Dashboard'}</h1>
+            </div>
+            <CommandPaletteHint />
+            <ThemeToggle />
+          </header>
+          <CommandPalette />
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 md:p-6">
-          {children}
-        </main>
-      </SidebarInset>
-    </SidebarProvider>
+          {/* Page Content */}
+          <main className="flex-1 p-4 md:p-6">
+            {children}
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
+    </WorkspaceProvider>
   );
 }

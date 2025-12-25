@@ -14,11 +14,13 @@ import {
   Home,
   LogOut,
   Lock,
+  ClipboardList,
   LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { usePermissions } from '@/hooks/useEntitlements';
 import { Logo } from '@/components/Logo';
+import { WorkspaceSwitcher } from '@/components/workspace/WorkspaceSwitcher';
 import {
   Sidebar,
   SidebarContent,
@@ -61,6 +63,7 @@ const mainNavItems: NavItem[] = [
 const projectNavItems: NavItem[] = [
   { title: 'Proposals', url: '/dashboard/proposals', icon: FileText },
   { title: 'Projects', url: '/dashboard/projects', icon: FolderKanban },
+  { title: 'Service Requests', url: '/dashboard/service-requests', icon: ClipboardList },
 ];
 
 const systemNavItems: NavItem[] = [
@@ -172,10 +175,11 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarHeader className={collapsed ? 'border-b border-sidebar-border p-2' : 'border-b border-sidebar-border p-4'}>
         {!collapsed && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mb-3">
             <Logo to="/dashboard" size="xl" className="flex-shrink-0" />
           </div>
         )}
+        <WorkspaceSwitcher collapsed={collapsed} />
       </SidebarHeader>
 
       <SidebarContent>

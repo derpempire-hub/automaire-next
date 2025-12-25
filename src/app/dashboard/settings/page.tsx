@@ -5,25 +5,45 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { usePermissions } from '@/hooks/useEntitlements';
-import { User, Package, Flag } from 'lucide-react';
+import { User, Package, Flag, Users, Building2 } from 'lucide-react';
+import { useWorkspace, canManageWorkspace, canManageMembers } from '@/hooks/useWorkspace';
+import { WorkspaceSettingsTab } from '@/components/settings/WorkspaceSettingsTab';
+import { MembersTab } from '@/components/settings/MembersTab';
+import { ProfileTab } from '@/components/settings/ProfileTab';
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const { isSuperAdmin } = usePermissions();
+  const { role } = useWorkspace();
+
+  const canViewWorkspace = canManageWorkspace(role);
+  const canViewMembers = canManageMembers(role);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold">Settings</h1>
-        <p className="text-muted-foreground">Manage your account and preferences.</p>
+        <p className="text-muted-foreground">Manage your account, team, and workspace.</p>
       </div>
 
-      <Tabs defaultValue="account" className="space-y-6">
+      <Tabs defaultValue="profile" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="account" className="gap-2">
+          <TabsTrigger value="profile" className="gap-2">
             <User className="h-4 w-4" />
-            Account
+            Profile
           </TabsTrigger>
+          {canViewMembers && (
+            <TabsTrigger value="members" className="gap-2">
+              <Users className="h-4 w-4" />
+              Team Members
+            </TabsTrigger>
+          )}
+          {canViewWorkspace && (
+            <TabsTrigger value="workspace" className="gap-2">
+              <Building2 className="h-4 w-4" />
+              Workspace
+            </TabsTrigger>
+          )}
           {isSuperAdmin && (
             <>
               <TabsTrigger value="tiers" className="gap-2">
@@ -38,23 +58,21 @@ export default function SettingsPage() {
           )}
         </TabsList>
 
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>Your account information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="text-sm font-medium">Email</label>
-                <p className="text-muted-foreground">{user?.email}</p>
-              </div>
-              <Button variant="outline" onClick={signOut}>
-                Sign out
-              </Button>
-            </CardContent>
-          </Card>
+        <TabsContent value="profile">
+          <ProfileTab />
         </TabsContent>
+
+        {canViewMembers && (
+          <TabsContent value="members">
+            <MembersTab />
+          </TabsContent>
+        )}
+
+        {canViewWorkspace && (
+          <TabsContent value="workspace">
+            <WorkspaceSettingsTab />
+          </TabsContent>
+        )}
 
         {isSuperAdmin && (
           <>

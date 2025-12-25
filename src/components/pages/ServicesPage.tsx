@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Zap, MessageSquare, Phone, ArrowRight, Check, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { ProductDemo } from '@/components/landing/ProductDemo';
+import { HeroServiceShowcase } from '@/components/landing/HeroServiceShowcase';
 import { Logo } from '@/components/Logo';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -17,7 +17,6 @@ import {
   ShineCard,
   MagneticButton,
   Spotlight,
-  Beam,
 } from '@/components/animations';
 
 type ServiceId = 'websites' | 'automation' | 'chatbots' | 'voice';
@@ -261,9 +260,6 @@ export default function ServicesPage() {
                         Typical timeline
                       </div>
                       <div className="relative">
-                        {/* Animated beam along timeline */}
-                        <Beam className="left-[7px] top-4" duration={3} />
-
                         {/* Timeline line */}
                         <div className="absolute left-[7px] top-4 bottom-4 w-px bg-border" />
 
@@ -325,8 +321,8 @@ export default function ServicesPage() {
                 <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
                   Live preview
                 </div>
-                <div className="rounded-xl border border-border/50 shadow-xl bg-card">
-                  <ProductDemo defaultTab={currentService.demoTab} />
+                <div className="rounded-xl border border-border/50 shadow-xl bg-card overflow-hidden">
+                  <HeroServiceShowcase />
                 </div>
               </motion.div>
             </div>
